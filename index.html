@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
     <title>Hangman Game</title>
 </head>
+
 <body>
 
     <h1 class="center">Largest Cities in America Hangman Game</h1>
@@ -18,12 +20,15 @@
 
     <div id="guesses-left">Guesses left: 6</div>
 
-    <div id="hangman"><img id="pic" src="assets/images/Hangman-0.png"></div>
+    <div id="wins">Wins: 0</div>
 
-    <h2 id="win-lose">Type a letter to get started</h2>
+    <div id="hangman">
+        <img id="pic" src="assets/images/Hangman-0.png">
+    </div>
 
+    <h2 id="win-lose">Type a letter to get started <span id="reset"></span></h2>
 
-    
 </body>
 <script type="text/javascript" src="assets/javascript/game.js"></script>
+
 </html>
