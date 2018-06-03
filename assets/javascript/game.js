@@ -37,7 +37,7 @@ function initWordState() {
 document.getElementById("word").innerHTML = initWordState();
 
 
-document.onkeypress = function (event) {
+document.onkeydown = function (event) {
 
     //only run onkeypress when player has guesses left
     if (guessesLeft > 0 && winStop == false) {
