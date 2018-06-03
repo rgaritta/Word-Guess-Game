@@ -1,20 +1,26 @@
-//global variables
-var word = "new york";
+//global arrays
+var aryWord = ["new york", "los angeles", "chicago", "san antonio", "san diego", "dallas", "san jose", "phoenix", "houston", "philadelphia"];
 var userGuessList = [];
 var wordState = [];
-wordState.length = word.length;
+
+//global variables
 var guessesLeft = 6;
 var wins = 0;
 var winStop = false;
 
+//assign word a random string from aryWord
+var randomWord = Math.floor(Math.random() * aryWord.length);
+var word = aryWord[randomWord];
+wordState.length = word.length;
 
+//audio variables
+var correct = new Audio('assets/sounds/correct.mp3');
+var incorrect = new Audio('assets/sounds/incorrect.mp3');
+var yay = new Audio('assets/sounds/yay.mp3');
+var boo = new Audio('assets/sounds/boo.mp3');
 
-console.log(wordState);
-
-
-
+//give wordState initial values and return printable values without commas
 function initWordState() {
-
     var html = "";
     for (var i = 0; i < wordState.length; i++) {
         if (word[i] != " ") {
@@ -23,25 +29,24 @@ function initWordState() {
         }
         else {
             wordState[i] = " ";
-            html += "&nbsp;";
+            html += "&nbsp;&nbsp;";
         }
     }
     return html;
 }
-
 document.getElementById("word").innerHTML = initWordState();
 
 
-    document.onkeypress = function (event) {
-        
-        if (guessesLeft > 0 && winStop == false) {
-            
+document.onkeypress = function (event) {
+
+    //only run onkeypress when player has guesses left
+    if (guessesLeft > 0 && winStop == false) {
+
         var userGuess = event.key.toLowerCase();
-        console.log(guessesLeft);
 
         var inp = String.fromCharCode(event.keyCode);
 
-        //only run script when player has gueses left
+        
 
         //check to see if character is a letter
         if (/[a-zA-Z]/.test(inp)) {
@@ -59,9 +64,11 @@ document.getElementById("word").innerHTML = initWordState();
                 for (var i = 0; i < word.length; i++) {
                     if (userGuess == word[i]) {
                         wordState[i] = userGuess;
-                        return null;
+                        var letterExists = 1;
                     }
                 }
+
+
 
                 for (var i = 0; i < userGuessList.length; i++) {
                     if (" " + userGuess.toUpperCase() == userGuessList[i]) {
@@ -70,13 +77,33 @@ document.getElementById("word").innerHTML = initWordState();
                     }
                 }
 
-                userGuessList.push(" " + userGuess.toUpperCase());
-                return 0;
+
+                if (letterExists == 1) {
+                    if (word == didWin()) {
+                        yay.play();
+                    }
+                    else {
+                        correct.play();
+                    }
+
+                    return null;
+                }
+                else {
+                    if (guessesLeft - 1 == 0) {
+                        boo.play();
+                    }
+                    else {
+                        incorrect.play();
+                    }
+                    userGuessList.push(" " + userGuess.toUpperCase());
+                    return 0;
+                }
             }
+
+
 
             //call checkLetter function & check to see if the letter is in the word
             if (checkLetter() == 0) {
-                //alert("Letter is not in word");
                 guessesLeft--;
                 document.getElementById("guesses").innerHTML = "Incorrect guesses: " + userGuessList;
 
@@ -117,38 +144,53 @@ document.getElementById("word").innerHTML = initWordState();
 
 
             //convert wordState to string userWord to check against chosen word or phrase
-            var userWord = "";
-            for (var i = 0; i < wordState.length; i++) {
-                userWord += wordState[i];
+            function didWin() {
+                var userWord = "";
+                for (var i = 0; i < wordState.length; i++) {
+                    userWord += wordState[i];
+                }
+                return userWord;
             }
 
+            
+            //clear the win-lose div
             document.getElementById("win-lose").innerHTML = "";
 
             //user wins if userWord equals the word or phrase
-            if (userWord == word) {
-                document.getElementById("win-lose").innerHTML = "You win! =) <span id='reset'></span>";
+            if (didWin() == word) {
+                document.getElementById("win-lose").innerHTML = "<span id='reset'></span>";
                 wins++;
                 winStop = true;
                 document.getElementById("wins").innerHTML = "Wins: " + wins;
-                document.getElementById("reset").innerHTML = "Play again";
+                document.getElementById("reset").innerHTML = "You win! =)&nbsp;&nbsp;Click here to play again";
 
             }
 
             //user loses if they guessed 6 times
             if (guessesLeft == 0) {
-                document.getElementById("win-lose").innerHTML = "You lose. =( <span id='reset'></span>";
-                document.getElementById("reset").innerHTML = "Play again";
+                document.getElementById("win-lose").innerHTML = "<span id='reset'></span>";
+                document.getElementById("reset").innerHTML = "You lose. =(&nbsp;&nbsp;Click here to play again";
 
             }
-
-
-
             document.getElementById("guesses-left").innerHTML = "Guesses left: " + guessesLeft;
 
+            //reset function
+            document.getElementById("reset").onclick = function () {
+                randomWord = Math.floor(Math.random() * aryWord.length);
+                word = aryWord[randomWord];
+                wordState.length = word.length;
 
+                document.getElementById("word").innerHTML = initWordState();
+                guessesLeft = 6;
+                winStop = 0;
+                userGuessList = [];
+                document.getElementById("guesses-left").innerHTML = "Guesses left: " + guessesLeft;
+                document.getElementById("guesses").innerHTML = "Incorrect guesses: " + userGuessList;
+                document.getElementById("win-lose").innerHTML = "";
+                document.getElementById("pic").setAttribute("src", "assets/images/Hangman-0.png");
 
-            //console.log(userWord);
-            //console.log(wordState);
+            };
+
         }
     }
 
